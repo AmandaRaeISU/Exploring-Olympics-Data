@@ -1,0 +1,175 @@
+---
+title: "Olympics"
+author: "Amanda Rae"
+date: "October 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I want to explore data sets and strengthen my skills in R
+there are two data sets included in the kaggle.com data set 120 years of olympic history athletes and events.
+https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results
+
+the first data set:
+
+```{r}
+olympic_atheletes<- read.csv("C:/Users/raeam/Desktop/RESUME Folder/Projects/athlete_events.csv")
+
+head(olympic_atheletes)
+
+dim(olympic_atheletes)
+
+```
+
+The second data set:
+
+```{r}
+#olympic_regions<- read.csv("C:/Users/raeam/Desktop/RESUME Folder/Projects/noc_regions.csv")
+
+#head(olympic_regions)
+
+#dim(olympic_regions)
+
+```
+
+the first data sets appears to be more interesting than the second so I will explore it further:
+```{r}
+summary(olympic_atheletes)
+
+```
+
+
+ 
+```{r}
+
+library(ggplot2)
+ggplot(data = olympic_atheletes, aes(x = Sport)) + 
+              geom_bar() +
+              facet_wrap(~Season) + 
+              coord_flip()
+
+#grossssssssssss   ------->>>> ggplot(data = olympic_atheletes, aes(x = Sporxt, y = Year))
+### I want to see the difference between years and sports(  = years) filter sports
+
+ggplot(data = olympic_atheletes, aes(x = Team, y = Year)) +
+              geom_point() +
+              facet_wrap(~Sport)
+
+
+#######Which sports have a year == 1896?
+
+###gives the number of 1896 entries/athletes
+which.min(olympic_atheletes$Year)
+
+ 
+```
+```{r}
+
+ library(dplyr)
+
+#first olympics data set
+first_olympics<- filter(olympic_atheletes, Year == 1896)
+
+ggplot(data = first_olympics, aes(x = Team)) +  
+              geom_bar() 
+
+#first_olympics$Sex <- factor(first_olympics$Sex, 
+#                             levels = c("Female", "Male"),
+#                             labels = c("Female", "Male"))
+
+olympic_sex_1 <- first_olympics %>% 
+                                ggplot(aes(x = Team, fill = Sex, na.rm = FALSE)) +  
+                                geom_bar(position = "stack", na.rm = FALSE) + 
+                                scale_fill_manual(name = "Sex", values = c("#225ea8","#ed97e3"))
+
+olympic_sex_1
+
+```              
+             
+#Last olympics data set
+last_olympics<- filter(olympic_atheletes, Year == 2016)
+```{r}
+last_olympics<- filter(olympic_atheletes, Year == 2016)
+
+ggplot(data = first_olympics, aes(x = Team)) +  
+              geom_bar() 
+
+#first_olympics$Sex <- factor(first_olympics$Sex, 
+#                             levels = c("Female", "Male"),
+#                             labels = c("Female", "Male"))
+
+olympic_sex_last <- last_olympics %>% 
+                                ggplot(aes(x = Team, fill = Sex, na.rm = FALSE)) +  
+                                geom_bar(position = "stack", na.rm = FALSE) + 
+                                scale_fill_manual(name = "Sex", values = c("#ed97e3", "#225ea8")) 
+
+olympic_sex_last
+
+
+
+```
+
+  
+In the first olympics in 1896 only men competed. There were also only 18 countries who competed. In the first olympics greece Had the most team members. 
+In 2016 there were both men and women competing. There were also numerous teams involved. {quantity?}
+
+```{r}
+#trying to figure out how many participants from the united states performed in the last year of Olympics
+
+library(dplyr)
+
+str(olympic_sex_last)
+
+us2016<- filter(olympic_sex_last, Team == "United States")
+sum(us2016$count)
+
+
+head(olympic_sex_last, select = 'Team')
+
+```
+
+```{r}
+o_age<- filter(olympic_atheletes, Age > 50)
+o_age
+
+o_age_youngins<- filter(olympic_atheletes, Age < 12)
+o_age_youngins
+
+o_arts<- filter(olympic_atheletes, Sport == "Art Competitions")
+dim(o_arts)
+o_arts
+```
+Questions to be answered:
+How have sports changed in the olympics over the years?
+Interesting to note that the arts competition was a strong event in the early twentith century. 
+In 1896 all the competitors were men. When was the first woman in the olympics? The next year of the Olympics, 1900, was the first year to have female competitors. There were very few countries that allowed women to participate. *Check ehich events women were allowed to participate in? What year were women alllowed to compete athletically with one another?*
+
+```{r}
+olympic_bos <- olympic_atheletes %>% 
+                                ggplot(aes(x = Team, fill = Sex, na.rm = FALSE)) +  
+                                geom_bar(position = "stack", na.rm = FALSE) + 
+                                facet_wrap(~ Year)
+                                scale_fill_manual(name = "Sex", values = c("#225ea8","#ed97e3"))
+
+                                
+olympic_bos
+
+o_56<- filter(olympic_atheletes, Year == 1956)
+
+o_56  %>%   ggplot(aes(x = Team, fill = Sex, na.rm = FALSE)) +  
+                  geom_bar(position = "stack", na.rm = FALSE) + 
+                  scale_fill_manual(name = "Sex", values = c("#ed97e3", "#225ea8"))
+
+o_1900<- filter(olympic_atheletes, Year == 1900)
+
+o_1900  %>%   ggplot(aes(x = Team, fill = Sex, na.rm = FALSE)) +  
+                  geom_bar(position = "stack", na.rm = FALSE) + 
+                  scale_fill_manual(name = "Sex", values = c("#ed97e3", "#225ea8"))
+
+```
+When did the olympic comittee decide to cut the arts competition? What effect did this have on age?
+what artist won gold medals for their work?
+I noticed that the lowest weight is 25kg that seems exceptionally small. Is it due to young age?
